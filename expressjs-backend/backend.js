@@ -317,11 +317,6 @@ const users = {
 	]
 }
 
-// const findUserByName = (name) => {
-// 	return users['users_list'].filter((user)=>user['name'] === name);
-// }
-
-
 app.use(express.json()); //set up express app
 
 //GET
@@ -380,8 +375,20 @@ app.get('/users', (req,res)=>{
 	if (name != undefined && job != undefined)
 	{
 		let resNJ = findUserNameJob(name, job);
-		resNJ = {users_list: result};
+		resNJ = {users_list: resNJ};
 		res.send(resNJ);
+	}
+	else if(name != undefined)
+	{
+		let resN = findUserByName(name);
+		resN = {users_list: resN};
+		res.send(resN);
+	}
+	else if(job != undefined)
+	{
+		let resJ = findUserByJob(job);
+		resJ = {users_list: resJ};
+		res.send(resJ);
 	}
 	else
 	{
@@ -389,13 +396,21 @@ app.get('/users', (req,res)=>{
 	}
 });
 
+
+
 const findUserNameJob = (name, job) => {
 	return users['users_list'].filter((user)=> user['name'] === name).filter((user) => user['job'] === job);
 }
-
+const findUserByName = (name) => {
+	return users['users_list'].filter((user)=>user['name'] === name);
+}
+const findUserByJob = (job) => {
+	return users['users_list'].filter((user)=>user['job'] === job);
+}
+	
 //make backend server to listen to incoming http requests 
 app.listen(port, () => {
 	console.log(`App listening at http://localhost:${port}`);
 });
 
-/* End of 6.*/
+/* End of 7.*/
