@@ -5,6 +5,10 @@ const express = require('express'); //import express module
 const app = express(); //create instance of Express 
 const port = 5000; //define a port number we'll use to listen to incoming HTTP request
 
+//Linking Frontend and Backend (AS3)
+const cors = require('cors');
+//
+
 const users = {
 	users_list : 
 	[
@@ -36,6 +40,9 @@ const users = {
 	]
 }
 
+//AS3
+app.use(cors());
+//
 app.use(express.json()); //set up express app
 
 //GET
