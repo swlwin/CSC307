@@ -1,13 +1,9 @@
-/* 7 - Using the POST method*/
-// delete user 
+//Linking Frontend and Backend 
 
 const express = require('express'); //import express module 
 const app = express(); //create instance of Express 
 const port = 5000; //define a port number we'll use to listen to incoming HTTP request
-
-//Linking Frontend and Backend (AS3)
 const cors = require('cors');
-//
 
 const users = {
 	users_list : 
@@ -40,9 +36,18 @@ const users = {
 	]
 }
 
-//AS3
+const findUserNameJob = (name, job) => {
+	return users['users_list'].filter((user)=> user['name'] === name).filter((user) => user['job'] === job);
+}
+const findUserByName = (name) => {
+	return users['users_list'].filter((user)=>user['name'] === name);
+}
+const findUserByJob = (job) => {
+	return users['users_list'].filter((user)=>user['job'] === job);
+}
+
+//=== APP ========================================//
 app.use(cors());
-//
 app.use(express.json()); //set up express app
 
 //GET
@@ -57,42 +62,6 @@ app.get('/users/:id', (req, res) => {
 		res.send(result);
 	}
 });
-
-function findUserById(id)
-{
-	return users['users_list'].find((user) => user['id'] === id);
-	//or 
-	//return users['user_list'].filter((user) => user['id'] === id);
-}
-
-//POST new users to list of users
-app.post('/users', (req, res) => {
-	const userToAdd = req.body;
-	addUser(userToAdd);
-	res.status(200).end();
-});
-
-function addUser(user){
-	users['users_list'].push(user);
-}
-
-//Delete user using their id
-app.delete('/users/:id', (req,res)=>
-{
-	const id = req.params['id'];
-	let delRes = deleteUser(id);
-	if(delRes === undefined || delRes.length == 0)
-		res.status(404).send('User to be deleted not found');
-	else 
-	{
-		res.status(200).end();
-	}
-});
-
-function deleteUser(id)
-{
-	return users['users_list'] = users['users_list'].filter((user) => user['id'] !== id);
-}
 
 //Get users by name and by job
 app.get('/users', (req,res)=>{
@@ -122,21 +91,47 @@ app.get('/users', (req,res)=>{
 	}
 });
 
+//POST new users to list of users
+//Change made
+app.post('/users', (req, res) => {
+	const userToAdd = req.body;
+	//addUser(userToAdd);
+	res.status(201).send(addUser(userToAdd)).end();
+});
 
+//Delete user using their id
+app.delete('/users/:id', (req,res)=>
+{
+	const id = req.params['id'];
+	let delRes = deleteUser(id);
+	if(delRes === undefined || delRes.length == 0)
+		res.status(404).send('User to be deleted not found');
+	else 
+	{
+		res.status(200).end();
+	}
+});
 
-const findUserNameJob = (name, job) => {
-	return users['users_list'].filter((user)=> user['name'] === name).filter((user) => user['job'] === job);
-}
-const findUserByName = (name) => {
-	return users['users_list'].filter((user)=>user['name'] === name);
-}
-const findUserByJob = (job) => {
-	return users['users_list'].filter((user)=>user['job'] === job);
-}
-	
 //make backend server to listen to incoming http requests 
 app.listen(port, () => {
 	console.log(`App listening at http://localhost:${port}`);
 });
+//==============================================================//
 
-/* End of 7.*/
+//=== FUNCTIONS ===================================//
+function findUserById(id)
+{
+	return users['users_list'].find((user) => user['id'] === id);
+	//or 
+	//return users['user_list'].filter((user) => user['id'] === id);
+}
+
+function addUser(user){
+	users['users_list'].push(user);
+}
+
+function deleteUser(id)
+{
+	return users['users_list'] = users['users_list'].filter((user) => user['id'] !== id);
+}
+//====================================================//
