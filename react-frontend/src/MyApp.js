@@ -8,6 +8,24 @@ function MyApp()
 {
   const [characters, setCharacters] = useState([]);
 
+  //=== FUNCTIONS =======================================//
+  function updateList(person){
+    makePostCall(person).then(result => {
+      if(result && result.status === 201)
+      setCharacters([...characters,person]);
+    });
+  }
+
+  function removeOneCharacter (index) 
+  {
+    const updated = characters.filter( (character, i) => {
+      return i !== index
+    });
+    setCharacters(updated);
+  }
+  //====================================================//
+
+   //=== ASYNC FUNCTION =================================//
   //Linking Frontend with Backend (Assignemnt 3)
   async function fetchAll()
   {
@@ -33,35 +51,14 @@ function MyApp()
       return false;
     }
   }
-
-  function updateList(person){
-    makePostCall(person).then(result => {
-      if(result && result.status === 201)
-      setCharacters([...characters,person]);
-    });
-  }
-
+  //=====================================================//
+  
   useEffect(()=>{
     fetchAll().then( result => {
       if(result)
         setCharacters(result);
     });
   }, [] );
-  //////////////////////////////////////////////
-
-  //Assignment 1//
-  function removeOneCharacter (index) 
-  {
-    const updated = characters.filter( (character, i) => {
-      return i !== index
-    });
-    setCharacters(updated);
-  }
-
-  // function updateList(person)
-  // {
-  //   setCharacters([...characters, person]);
-  // }
 
   return (
   <div className="container">
@@ -70,5 +67,4 @@ function MyApp()
   </div>
   )
 }
-
 export default MyApp;

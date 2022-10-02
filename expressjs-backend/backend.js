@@ -115,10 +115,28 @@ app.delete('/users/:id', (req,res)=>
 //make backend server to listen to incoming http requests 
 app.listen(port, () => {
 	console.log(`App listening at http://localhost:${port}`);
+	//console.log(generateID());
 });
 //==============================================================//
 
 //=== FUNCTIONS ===================================//
+function generateID()
+{
+	id = '';
+	character = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+	charLength = character.length;
+	length = 6;
+	
+	do{
+		for(i = 0; i < length; i++)
+		{
+			id += character.charAt(Math.floor(Math.random()*charLength))
+		}
+	}while(users.users_list.filter(user => user.id == id).length>0); //all id is unique
+	
+	return id;
+}
+
 function findUserById(id)
 {
 	return users['users_list'].find((user) => user['id'] === id);
@@ -127,7 +145,10 @@ function findUserById(id)
 }
 
 function addUser(user){
+	//implement id 
+	user['id'] = generateID();
 	users['users_list'].push(user);
+	return user;
 }
 
 function deleteUser(id)
