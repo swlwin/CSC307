@@ -95,8 +95,13 @@ app.get('/users', (req,res)=>{
 //Change made
 app.post('/users', (req, res) => {
 	const userToAdd = req.body;
-	//addUser(userToAdd);
-	res.status(201).send(addUser(userToAdd)).end();
+	var json = {}
+	userToAdd['id'] = generateID();
+	addUser(userToAdd);
+	json['id'] = userToAdd['id'];
+	json['name'] = userToAdd['name'];
+	json['job'] = userToAdd['job'];
+	res.status(201).send(json).end();
 });
 
 //Delete user using their id
@@ -104,18 +109,17 @@ app.delete('/users/:id', (req,res)=>
 {
 	const id = req.params['id'];
 	let delRes = deleteUser(id);
-	if(delRes === undefined || delRes.length == 0)
+	if(delRes === undefined || delRes.length === 0)
 		res.status(404).send('User to be deleted not found');
 	else 
 	{
-		res.status(200).end();
+		res.status(204).end();
 	}
 });
 
 //make backend server to listen to incoming http requests 
 app.listen(port, () => {
 	console.log(`App listening at http://localhost:${port}`);
-	//console.log(generateID());
 });
 //==============================================================//
 
@@ -140,15 +144,10 @@ function generateID()
 function findUserById(id)
 {
 	return users['users_list'].find((user) => user['id'] === id);
-	//or 
-	//return users['user_list'].filter((user) => user['id'] === id);
 }
 
 function addUser(user){
-	//implement id 
-	user['id'] = generateID();
 	users['users_list'].push(user);
-	return user;
 }
 
 function deleteUser(id)

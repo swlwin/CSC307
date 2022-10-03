@@ -12,16 +12,26 @@ function MyApp()
   function updateList(person){
     makePostCall(person).then(result => {
       if(result && result.status === 201)
-      setCharacters([...characters,person]);
+      setCharacters([...characters, person]);
     });
   }
 
   function removeOneCharacter (index) 
   {
-    const updated = characters.filter( (character, i) => {
-      return i !== index
+    makeDeleteCall(index).then(response => 
+    {
+      if (response && response.status === 204)
+      {
+        const updated = characters.filter( (character, i) => {
+          return i !== index;
+        });
+        setCharacters(updated);
+      }
+      else if (response.status === 404)
+      {
+        console.log('User to be deleted not found');
+      }
     });
-    setCharacters(updated);
   }
   //====================================================//
 
@@ -43,11 +53,26 @@ function MyApp()
   async function makePostCall(person)
   {
     try{ 
-      const response = await axios.post('http://localhost:5000/users', person);
+      const response = await axios.post('http://localhost:5000/users', person)
+      .then(response => {
+        setCharacters(characters=> [...characters,response.data]);
+      });
       return response;
     }
     catch(error){
       console.log(error); 
+      return false;
+    }
+  }
+
+  async function makeDeleteCall(index)
+  {
+    try{
+      const response = await axios.delete(`http://localhost:5000/users/${characters[index].id}`);
+      return response;
+    }
+    catch (error) { 
+      console.log(error);
       return false;
     }
   }
